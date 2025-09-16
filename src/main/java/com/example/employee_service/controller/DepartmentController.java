@@ -3,8 +3,10 @@ package com.example.employee_service.controller;
 import com.example.employee_service.dto.ApiResponse;
 import com.example.employee_service.dto.DepartmentAverageSalaryDto;
 import com.example.employee_service.dto.DepartmentDtos;
+import com.example.employee_service.dto.DepartmentDashboardDto;
 import com.example.employee_service.entity.Department;
 import com.example.employee_service.service.DepartmentAnalyticsService;
+import com.example.employee_service.service.DepartmentDashboardService;
 import com.example.employee_service.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import java.util.List;
 public class DepartmentController {
     private final DepartmentService departmentService;
     private final DepartmentAnalyticsService departmentAnalyticsService;
+    private final DepartmentDashboardService departmentDashboardService;
 
     // GET /api/departments: list all departments
     @GetMapping
@@ -40,6 +43,17 @@ public class DepartmentController {
     public ResponseEntity<ApiResponse<List<DepartmentAverageSalaryDto>>> getAverageSalaries() {
         List<DepartmentAverageSalaryDto> result = departmentAnalyticsService.getDepartmentAverageSalaries();
         return ResponseEntity.ok(ApiResponse.ok(result));
+    }
+
+    // GET /api/departments/{id}/dashboard: aggregated performance data
+    @GetMapping("/{id}/dashboard")
+    public ResponseEntity<ApiResponse<DepartmentDashboardDto>> getDashboard(@PathVariable Long id) {
+        DepartmentDashboardDto dto = departmentDashboardService.getDashboard(id);
+        if (dto == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.message(false, "Department not found"));
+        }
+        return ResponseEntity.ok(ApiResponse.ok(dto));
     }
 }
 

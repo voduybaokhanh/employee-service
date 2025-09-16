@@ -1,9 +1,7 @@
 package com.example.employee_service.service;
 
 import com.example.employee_service.dto.DepartmentAverageSalaryDto;
-import com.example.employee_service.entity.Department;
 import com.example.employee_service.entity.Employee;
-import com.example.employee_service.repository.DepartmentRepository;
 import com.example.employee_service.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +15,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DepartmentAnalyticsService {
     private final EmployeeRepository employeeRepository;
-    private final DepartmentRepository departmentRepository;
 
     // Compute average salary grouped by department name
     public List<DepartmentAverageSalaryDto> getDepartmentAverageSalaries() {

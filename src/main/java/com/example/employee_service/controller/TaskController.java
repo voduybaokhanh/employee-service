@@ -3,6 +3,7 @@ package com.example.employee_service.controller;
 import com.example.employee_service.dto.ApiResponse;
 import com.example.employee_service.dto.TaskDtos;
 import com.example.employee_service.dto.TaskSearchParams;
+import com.example.employee_service.dto.TaskAssignDto;
 import com.example.employee_service.entity.Task;
 import com.example.employee_service.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,20 @@ public class TaskController {
         params.setDueDate(dueDate);
         List<Task> tasks = taskService.searchTasks(params);
         return ResponseEntity.ok(ApiResponse.ok(tasks));
+    }
+
+    // PUT /api/tasks/{id}/assign: assign task to employee and publish event
+    @PutMapping("/{id}/assign")
+    public ResponseEntity<ApiResponse<Task>> assignTask(
+            @PathVariable Long id,
+            @RequestBody TaskAssignDto request
+    ) {
+        Task saved = taskService.assignTask(id, request);
+        if (saved == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.message(false, "Invalid task or employee"));
+        }
+        return ResponseEntity.ok(ApiResponse.ok(saved));
     }
 }
 

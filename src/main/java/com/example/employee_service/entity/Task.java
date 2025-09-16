@@ -40,6 +40,9 @@ public class Task {
     @Column(name = "due_date")
     private java.time.LocalDate dueDate;
 
+    @Column(name = "assigned_by")
+    private String assignedBy; // employee id who assigned
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

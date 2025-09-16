@@ -2,12 +2,15 @@ package com.example.employee_service.service;
 
 import com.example.employee_service.dto.TaskDtos;
 import com.example.employee_service.dto.TaskSearchParams;
+import com.example.employee_service.dto.TaskAssignDto;
 import com.example.employee_service.entity.Employee;
 import com.example.employee_service.entity.Task;
 import com.example.employee_service.repository.EmployeeRepository;
 import com.example.employee_service.repository.TaskRepository;
+import com.example.employee_service.event.TaskAssignedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,6 +21,7 @@ import java.util.List;
 public class TaskService {
     private final TaskRepository taskRepository;
     private final EmployeeRepository employeeRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     // Create a new task for an employee
     public Task createTask(TaskDtos.CreateRequest request) {
@@ -37,17 +41,36 @@ public class TaskService {
 
     // Dynamic search using Specification with optional filters
     public List<Task> searchTasks(TaskSearchParams params) {
-        Specification<Task> spec = Specification.where(null);
+        List<Specification<Task>> parts = new java.util.ArrayList<>();
         if (params.getEmployeeId() != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("employee").get("id"), params.getEmployeeId()));
+            parts.add((root, query, cb) -> cb.equal(root.get("employee").get("id"), params.getEmployeeId()));
         }
         if (params.getStatus() != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), params.getStatus()));
+            parts.add((root, query, cb) -> cb.equal(root.get("status"), params.getStatus()));
         }
         if (params.getDueDate() != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("dueDate"), params.getDueDate()));
+            parts.add((root, query, cb) -> cb.equal(root.get("dueDate"), params.getDueDate()));
         }
-        return taskRepository.findAll(spec);
+        Specification<Task> combined = parts.isEmpty() ? (root, query, cb) -> cb.conjunction() : Specification.allOf(parts);
+        return taskRepository.findAll(combined);
+    }
+
+    // Assign a task to an employee and publish async event
+    public Task assignTask(Long taskId, TaskAssignDto request) {
+        Task task = taskRepository.findById(taskId).orElse(null);
+        if (task == null) return null;
+        Employee assignee = employeeRepository.findById(request.getEmployeeId()).orElse(null);
+        if (assignee == null) return null;
+
+        // Update assignment data
+        task.setEmployee(assignee);
+        task.setAssignedBy(request.getAssignedBy());
+        task.setUpdatedAt(LocalDateTime.now());
+        Task saved = taskRepository.save(task);
+
+        // Publish event without blocking
+        eventPublisher.publishEvent(new TaskAssignedEvent(this, saved, request.getAssignedBy()));
+        return saved;
     }
 }
 
