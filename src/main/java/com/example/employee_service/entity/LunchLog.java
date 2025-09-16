@@ -1,5 +1,6 @@
 package com.example.employee_service.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -15,11 +16,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tasks")
+@Table(name = "lunch_logs")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Task {
+public class LunchLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,23 +29,14 @@ public class Task {
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
-    @Column(name = "task_name", nullable = false)
-    private String taskName;
+    @Column(name = "date", nullable = false)
+    private LocalDate date;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
-    @Column(name = "status")
-    private String status; // e.g., NEW, ONGOING, DONE
-
-    @Column(name = "due_date")
-    private java.time.LocalDate dueDate;
+    @Column(name = "menu")
+    private String menu;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 }
 
 

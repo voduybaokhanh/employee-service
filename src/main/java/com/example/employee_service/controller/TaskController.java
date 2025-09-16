@@ -2,12 +2,15 @@ package com.example.employee_service.controller;
 
 import com.example.employee_service.dto.ApiResponse;
 import com.example.employee_service.dto.TaskDtos;
+import com.example.employee_service.dto.TaskSearchParams;
 import com.example.employee_service.entity.Task;
 import com.example.employee_service.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -25,6 +28,21 @@ public class TaskController {
                     .body(ApiResponse.message(false, "Invalid employee_id"));
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(created));
+    }
+
+    // GET /api/tasks/search: dynamic search by optional params using Specification
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<Task>>> searchTasks(
+            @RequestParam(required = false, name = "employee_id") String employeeId,
+            @RequestParam(required = false, name = "status") String status,
+            @RequestParam(required = false, name = "due_date") java.time.LocalDate dueDate
+    ) {
+        TaskSearchParams params = new TaskSearchParams();
+        params.setEmployeeId(employeeId);
+        params.setStatus(status);
+        params.setDueDate(dueDate);
+        List<Task> tasks = taskService.searchTasks(params);
+        return ResponseEntity.ok(ApiResponse.ok(tasks));
     }
 }
 

@@ -15,11 +15,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tasks")
+@Table(name = "department_history")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Task {
+public class DepartmentHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,23 +28,12 @@ public class Task {
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
-    @Column(name = "task_name", nullable = false)
-    private String taskName;
+    @ManyToOne
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
-    @Column(name = "status")
-    private String status; // e.g., NEW, ONGOING, DONE
-
-    @Column(name = "due_date")
-    private java.time.LocalDate dueDate;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "changed_at", nullable = false)
+    private LocalDateTime changedAt;
 }
 
 
