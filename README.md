@@ -202,3 +202,4 @@ All endpoints return:
 - Ensure MySQL user has privileges on `employee_db`.
 - Adjust `server.port` and datasource properties as needed.
 - Logs show SQL (`spring.jpa.show-sql=true`) in development.
+- Wiki: https://deepwiki.com/voduybaokhanh/employee-service/6.1-employee-apis
