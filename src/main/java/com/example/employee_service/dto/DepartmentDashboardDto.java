@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Data
 public class DepartmentDashboardDto {
-    private Long departmentId;
+    private String departmentId;
     private String departmentName;
     private Long totalEmployees;
     private Double averageSalary;

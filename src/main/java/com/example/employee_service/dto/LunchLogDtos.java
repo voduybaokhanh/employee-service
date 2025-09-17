@@ -13,8 +13,10 @@ public class LunchLogDtos {
         @Data
         public static class Item {
             private String employeeId;
-            private LocalDate date;
-            private String menu;
+            private LocalDate lunchDate;
+            private String mealType;
+            private String restaurant;
+            private String notes;
         }
     }
 }

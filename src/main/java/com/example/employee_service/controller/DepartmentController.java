@@ -47,7 +47,7 @@ public class DepartmentController {
 
     // GET /api/departments/{id}/dashboard: aggregated performance data
     @GetMapping("/{id}/dashboard")
-    public ResponseEntity<ApiResponse<DepartmentDashboardDto>> getDashboard(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<DepartmentDashboardDto>> getDashboard(@PathVariable String id) {
         DepartmentDashboardDto dto = departmentDashboardService.getDashboard(id);
         if (dto == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

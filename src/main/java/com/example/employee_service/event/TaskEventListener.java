@@ -13,6 +13,6 @@ public class TaskEventListener {
 	public void handleTaskAssigned(TaskAssignedEvent event) {
 		// Notification logic (email, message queue, etc.) would be here
 		log.info("Async notification: Task {} assigned to {} by {}", event.getTask().getId(),
-			event.getTask().getEmployee().getId(), event.getAssignedBy());
+			event.getTask().getEmployeeId(), event.getAssignedBy());
 	}
 }

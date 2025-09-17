@@ -48,16 +48,20 @@ public class EmployeeService {
         Department department = departmentRepository.findById(request.getDepartmentId()).orElse(null);
         if (department == null) return false;
 
-        // Update current department on employee
-        employee.setDepartment(department.getName());
+        // Store old department ID for history
+        String oldDepartmentId = employee.getDepartment();
+        
+        // Update current department on employee (store department ID)
+        employee.setDepartment(department.getId());
         employee.setUpdatedAt(LocalDateTime.now());
         employeeRepository.save(employee);
 
         // Insert history record
         DepartmentHistory history = new DepartmentHistory();
-        history.setEmployee(employee);
-        history.setDepartment(department);
-        history.setChangedAt(LocalDateTime.now());
+        history.setEmployeeId(employeeId);
+        history.setOldDepartmentId(oldDepartmentId);
+        history.setNewDepartmentId(department.getId());
+        history.setChangeDate(LocalDateTime.now());
         departmentHistoryRepository.save(history);
         return true;
     }

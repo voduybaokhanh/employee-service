@@ -15,6 +15,10 @@ public class TaskDtos {
         private String taskName;
 
         private String description;
+        private String status;
+        
+        @JsonProperty("due_date")
+        private java.time.LocalDate dueDate;
     }
 }
 

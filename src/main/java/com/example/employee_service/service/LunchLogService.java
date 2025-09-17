@@ -8,7 +8,6 @@ import com.example.employee_service.repository.LunchLogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +27,11 @@ public class LunchLogService {
                 continue;
             }
             LunchLog log = new LunchLog();
-            log.setEmployee(employee);
-            log.setDate(item.getDate());
-            log.setMenu(item.getMenu());
-            log.setCreatedAt(LocalDateTime.now());
+            log.setEmployeeId(item.getEmployeeId());
+            log.setLunchDate(item.getLunchDate());
+            log.setMealType(item.getMealType());
+            log.setRestaurant(item.getRestaurant());
+            log.setNotes(item.getNotes());
             toSave.add(log);
         }
         return lunchLogRepository.saveAll(toSave);

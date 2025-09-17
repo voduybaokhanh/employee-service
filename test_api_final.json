@@ -1,0 +1,242 @@
+{
+  "info": {
+    "name": "Employee Service API (Final - SQL Schema Aligned)",
+    "_postman_id": "f0c3a1f1-0000-4000-8000-employee-service-final",
+    "description": "Complete Postman collection for Employee Service - fully aligned with SQL schema. All APIs use correct field names, data types, and ID formats.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Employees",
+      "item": [
+        {
+          "name": "Get Employee by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/employees/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "employees", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "emp-001"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Employee (fullname, position, salary)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullname\": \"John Doe\",\n  \"position\": \"Manager\",\n  \"salary\": 85000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/employees/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "employees", ":id"],
+              "variable": [
+                { "key": "id", "value": "emp-001" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Change Department (Transactional)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"departmentId\": \"dept-001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/employees/:id/department",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "employees", ":id", "department"],
+              "variable": [
+                { "key": "id", "value": "emp-001" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Employee Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/employees/:id/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "employees", ":id", "profile"],
+              "variable": [
+                { "key": "id", "value": "emp-001" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Create Task (with status and due date)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employee_id\": \"emp-001\",\n  \"task_name\": \"Prepare Report\",\n  \"description\": \"Q3 financials\",\n  \"status\": \"TO_DO\",\n  \"due_date\": \"2025-12-31\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tasks"]
+            }
+          }
+        },
+        {
+          "name": "Search Tasks (optional params)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/search?employee_id=emp-001&status=IN_PROGRESS&due_date=2025-08-21",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tasks", "search"],
+              "query": [
+                { "key": "employee_id", "value": "emp-001" },
+                { "key": "status", "value": "IN_PROGRESS" },
+                { "key": "due_date", "value": "2025-08-21" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Assign Task (publish TaskAssignedEvent)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employeeId\": \"emp-001\",\n  \"assignedBy\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/:id/assign",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tasks", ":id", "assign"],
+              "variable": [
+                { "key": "id", "value": "1" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Departments",
+      "item": [
+        {
+          "name": "List Departments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "departments"]
+            }
+          }
+        },
+        {
+          "name": "Create Department (with ID)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"dept-101\",\n  \"name\": \"Engineering\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "departments"]
+            }
+          }
+        },
+        {
+          "name": "Department Average Salary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/departments/average-salary",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "departments", "average-salary"]
+            }
+          }
+        },
+        {
+          "name": "Department Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/departments/:id/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "departments", ":id", "dashboard"],
+              "variable": [
+                { "key": "id", "value": "dept-001" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lunch Logs",
+      "item": [
+        {
+          "name": "Bulk Create Lunch Logs (SQL Schema Aligned)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"employeeId\": \"emp-001\",\n      \"lunchDate\": \"2025-08-21\",\n      \"mealType\": \"Lunch\",\n      \"restaurant\": \"The Burger Joint\",\n      \"notes\": \"Team lunch with sales department\"\n    },\n    {\n      \"employeeId\": \"emp-002\",\n      \"lunchDate\": \"2025-08-21\",\n      \"mealType\": \"Lunch\",\n      \"restaurant\": \"Salad Bar\",\n      \"notes\": \"Quick lunch between meetings\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/lunch-logs/bulk",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "lunch-logs", "bulk"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

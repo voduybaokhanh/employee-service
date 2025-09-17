@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class EmployeeDepartmentChangeDto {
-    private Long departmentId;
+    private String departmentId;
 }
 
 

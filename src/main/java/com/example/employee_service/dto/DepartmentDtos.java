@@ -6,6 +6,7 @@ import lombok.Data;
 public class DepartmentDtos {
     @Data
     public static class CreateRequest {
+        private String id;
         private String name;
     }
 }

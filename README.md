@@ -78,52 +78,74 @@ All endpoints return:
 ## API Endpoints
 
 ### Employees
-- GET `/api/employees/{id}`: Get employee details by ID.
-- PUT `/api/employees/{id}`: Update `fullname`, `position`, and `salary`.
+- **GET** `/api/employees/{id}`: Get employee details by ID.
+  - Example: `GET /api/employees/emp-001`
+- **PUT** `/api/employees/{id}`: Update `fullname`, `position`, and `salary`.
   - Body:
     ```json
     { "fullname": "John Doe", "position": "Manager", "salary": 85000 }
     ```
-- PUT `/api/employees/{id}/department` (Transactional): Change employee department and insert history in a single transaction.
+- **PUT** `/api/employees/{id}/department` (Transactional): Change employee department and insert history in a single transaction.
   - Body:
     ```json
-    { "departmentId": 1 }
+    { "departmentId": "dept-001" }
     ```
-- GET `/api/employees/{id}/profile`: Aggregated profile with basic info, department name, and ongoing tasks.
+- **GET** `/api/employees/{id}/profile`: Aggregated profile with basic info, department name, and ongoing tasks.
 
 ### Tasks
-- POST `/api/tasks`: Create a task.
+- **POST** `/api/tasks`: Create a task.
   - Body:
     ```json
-    { "employee_id": "E001", "task_name": "Prepare Report", "description": "Q3 financials" }
+    { 
+      "employee_id": "emp-001", 
+      "task_name": "Prepare Report", 
+      "description": "Q3 financials",
+      "status": "TO_DO",
+      "due_date": "2025-12-31"
+    }
     ```
-- GET `/api/tasks/search`: Dynamic search using optional query params with JPA Specifications.
+  - Valid status values: `TO_DO`, `IN_PROGRESS`, `COMPLETED`
+- **GET** `/api/tasks/search`: Dynamic search using optional query params with JPA Specifications.
   - Query params: `employee_id`, `status`, `due_date` (YYYY-MM-DD)
-  - Example: `/api/tasks/search?employee_id=E001&status=ONGOING`
-- PUT `/api/tasks/{id}/assign`: Assign a task to an employee and publish `TaskAssignedEvent` (handled asynchronously).
+  - Example: `/api/tasks/search?employee_id=emp-001&status=IN_PROGRESS`
+- **PUT** `/api/tasks/{id}/assign`: Assign a task to an employee and publish `TaskAssignedEvent` (handled asynchronously).
   - Body:
     ```json
-    { "employeeId": "E001", "assignedBy": "admin" }
+    { "employeeId": "emp-001", "assignedBy": "admin" }
     ```
 
 ### Departments
-- GET `/api/departments`: List all departments.
-- POST `/api/departments`: Create a department.
+- **GET** `/api/departments`: List all departments.
+- **POST** `/api/departments`: Create a department.
   - Body:
     ```json
-    { "name": "Engineering" }
+    { "id": "dept-101", "name": "Engineering" }
     ```
-- GET `/api/departments/average-salary`: Average salary per department.
-- GET `/api/departments/{id}/dashboard`: Aggregated performance metrics for a department (employees, average salary, tasks by status, new employees last 30 days).
+- **GET** `/api/departments/average-salary`: Average salary per department (returns department names).
+- **GET** `/api/departments/{id}/dashboard`: Aggregated performance metrics for a department.
+  - Example: `GET /api/departments/dept-001/dashboard`
+  - Returns: total employees, average salary, tasks by status, new employees last 30 days
 
 ### Lunch Logs
-- POST `/api/lunch-logs/bulk`: Bulk create lunch logs.
+- **POST** `/api/lunch-logs/bulk`: Bulk create lunch logs.
   - Body:
     ```json
     {
       "items": [
-        { "employeeId": "E001", "date": "2025-08-21", "menu": "Pasta" },
-        { "employeeId": "E002", "date": "2025-08-21", "menu": "Salad" }
+        { 
+          "employeeId": "emp-001", 
+          "lunchDate": "2025-08-21", 
+          "mealType": "Lunch",
+          "restaurant": "The Burger Joint",
+          "notes": "Team lunch"
+        },
+        { 
+          "employeeId": "emp-002", 
+          "lunchDate": "2025-08-21", 
+          "mealType": "Lunch",
+          "restaurant": "Salad Bar",
+          "notes": "Quick lunch"
+        }
       ]
     }
     ```

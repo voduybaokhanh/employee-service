@@ -21,13 +21,13 @@ public class DepartmentDashboardService {
     private final EmployeeRepository employeeRepository;
     private final TaskRepository taskRepository;
 
-    public DepartmentDashboardDto getDashboard(Long departmentId) {
+    public DepartmentDashboardDto getDashboard(String departmentId) {
         Department dept = departmentRepository.findById(departmentId).orElse(null);
         if (dept == null) return null;
         String deptName = dept.getName();
 
-        // Employees in department
-        List<Employee> employees = employeeRepository.findByDepartmentName(deptName);
+        // Employees in department (by department ID)
+        List<Employee> employees = employeeRepository.findByDepartmentName(departmentId);
         long totalEmployees = employees.size();
         double avgSalary = employees.stream()
                 .filter(e -> e.getSalary() != null)
@@ -35,8 +35,8 @@ public class DepartmentDashboardService {
                 .average()
                 .orElse(0.0);
 
-        // Tasks by status for this department
-        List<Object[]> raw = taskRepository.countByStatusInDepartment(deptName);
+        // Tasks by status for this department (by department ID)
+        List<Object[]> raw = taskRepository.countByStatusInDepartment(departmentId);
         Map<String, Long> byStatus = new HashMap<>();
         for (Object[] row : raw) {
             String status = (String) row[0];
@@ -44,9 +44,9 @@ public class DepartmentDashboardService {
             byStatus.put(status, count);
         }
 
-        // New employees in last 30 days
+        // New employees in last 30 days (by department ID)
         LocalDateTime since = LocalDateTime.now().minusDays(30);
-        List<Employee> newEmployees = employeeRepository.findNewEmployeesSince(deptName, since);
+        List<Employee> newEmployees = employeeRepository.findNewEmployeesSince(departmentId, since);
 
         DepartmentDashboardDto dto = new DepartmentDashboardDto();
         dto.setDepartmentId(departmentId);

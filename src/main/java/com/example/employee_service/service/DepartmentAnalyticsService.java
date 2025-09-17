@@ -1,7 +1,9 @@
 package com.example.employee_service.service;
 
 import com.example.employee_service.dto.DepartmentAverageSalaryDto;
+import com.example.employee_service.entity.Department;
 import com.example.employee_service.entity.Employee;
+import com.example.employee_service.repository.DepartmentRepository;
 import com.example.employee_service.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DepartmentAnalyticsService {
     private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
 
     // Compute average salary grouped by department name
     public List<DepartmentAverageSalaryDto> getDepartmentAverageSalaries() {
@@ -25,10 +28,12 @@ public class DepartmentAnalyticsService {
 
         List<DepartmentAverageSalaryDto> result = new ArrayList<>();
         for (Map.Entry<String, List<Employee>> entry : byDept.entrySet()) {
+            String departmentId = entry.getKey();
+            Department dept = departmentRepository.findById(departmentId).orElse(null);
+            String departmentName = dept != null ? dept.getName() : departmentId;
             double avg = entry.getValue().stream().collect(Collectors.averagingInt(Employee::getSalary));
-            result.add(new DepartmentAverageSalaryDto(entry.getKey(), avg));
+            result.add(new DepartmentAverageSalaryDto(departmentName, avg));
         }
-        // Ensure departments with no employees still appear with null/0? Keeping only those with employees for now.
         return result;
     }
 }

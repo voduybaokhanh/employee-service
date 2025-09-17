@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EmployeeRepository extends JpaRepository<Employee, String> {
-    @Query("SELECT e FROM Employee e WHERE e.department = :departmentName")
-    List<Employee> findByDepartmentName(@Param("departmentName") String departmentName);
+    @Query("SELECT e FROM Employee e WHERE e.department = :departmentId")
+    List<Employee> findByDepartmentName(@Param("departmentId") String departmentId);
 
-    @Query("SELECT e FROM Employee e WHERE e.department = :departmentName AND e.createdAt >= :since")
-    List<Employee> findNewEmployeesSince(@Param("departmentName") String departmentName, @Param("since") LocalDateTime since);
+    @Query("SELECT e FROM Employee e WHERE e.department = :departmentId AND e.createdAt >= :since")
+    List<Employee> findNewEmployeesSince(@Param("departmentId") String departmentId, @Param("since") LocalDateTime since);
 }

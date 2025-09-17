@@ -1,11 +1,3 @@
 ---
-description: |-
-  - **Fairness & Bias Mitigation:** Ensure the data used to train your models is diverse and representative of the real world to prevent algorithmic bias.[1, 2]
-  - **Transparency & Explainability:** You should be able to explain how the AI system makes its decisions. This builds trust and allows users to understand the outcomes.[3, 4]
-  - **Privacy & Data Protection:** Always protect user data. Be transparent about how data is collected and used, and ensure you have appropriate consent.[5, 4]
-  - **Safety & Reliability:** AI systems must be safe and reliable. Plan for continuous testing and monitoring to ensure they perform as expected.[6]
-  - **Accountability & Human Oversight:** Always include a 'human in the loop' to oversee and make final decisions, especially for high-risk systems.[7, 4]
-  - **Sustainability:** Consider the environmental impact of the energy required to train and operate your models.[4]
-globs:
 alwaysApply: true
 ---

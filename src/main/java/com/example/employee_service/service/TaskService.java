@@ -13,7 +13,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -31,11 +30,11 @@ public class TaskService {
             return null;
         }
         Task task = new Task();
-        task.setEmployee(employee);
+        task.setEmployeeId(request.getEmployeeId());
         task.setTaskName(request.getTaskName());
         task.setDescription(request.getDescription());
-        task.setCreatedAt(LocalDateTime.now());
-        task.setUpdatedAt(LocalDateTime.now());
+        task.setStatus(request.getStatus() != null ? request.getStatus() : "TO_DO");
+        task.setDueDate(request.getDueDate());
         return taskRepository.save(task);
     }
 
@@ -43,7 +42,7 @@ public class TaskService {
     public List<Task> searchTasks(TaskSearchParams params) {
         List<Specification<Task>> parts = new java.util.ArrayList<>();
         if (params.getEmployeeId() != null) {
-            parts.add((root, query, cb) -> cb.equal(root.get("employee").get("id"), params.getEmployeeId()));
+            parts.add((root, query, cb) -> cb.equal(root.get("employeeId"), params.getEmployeeId()));
         }
         if (params.getStatus() != null) {
             parts.add((root, query, cb) -> cb.equal(root.get("status"), params.getStatus()));
@@ -63,9 +62,8 @@ public class TaskService {
         if (assignee == null) return null;
 
         // Update assignment data
-        task.setEmployee(assignee);
+        task.setEmployeeId(request.getEmployeeId());
         task.setAssignedBy(request.getAssignedBy());
-        task.setUpdatedAt(LocalDateTime.now());
         Task saved = taskRepository.save(task);
 
         // Publish event without blocking

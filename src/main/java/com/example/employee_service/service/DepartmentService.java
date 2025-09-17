@@ -18,14 +18,12 @@ public class DepartmentService {
         return departmentRepository.findAll();
     }
 
-    // Create if not exists by name (case-insensitive)
+    // Create department with specified ID and name
     public Department create(DepartmentDtos.CreateRequest request) {
-        return departmentRepository.findByNameIgnoreCase(request.getName())
-                .orElseGet(() -> {
-                    Department dept = new Department();
-                    dept.setName(request.getName());
-                    return departmentRepository.save(dept);
-                });
+        Department dept = new Department();
+        dept.setId(request.getId());
+        dept.setName(request.getName());
+        return departmentRepository.save(dept);
     }
 }
 

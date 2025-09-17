@@ -20,7 +20,8 @@ public class EmployeeProfileService {
     public EmployeeProfileDto getProfile(String employeeId) {
         Employee employee = employeeRepository.findById(employeeId).orElse(null);
         if (employee == null) return null;
-        List<Task> ongoing = taskRepository.findByEmployee_IdAndStatusIgnoreCase(employeeId, "ONGOING");
+        // Use IN_PROGRESS per documented statuses (TO_DO, IN_PROGRESS, COMPLETED)
+        List<Task> ongoing = taskRepository.findByEmployeeIdAndStatusIgnoreCase(employeeId, "IN_PROGRESS");
         EmployeeProfileDto dto = new EmployeeProfileDto();
         dto.setId(employee.getId());
         dto.setFullname(employee.getFullname());
