@@ -3,6 +3,7 @@
 A Spring Boot service for managing employees, departments, tasks, and lunch logs. It demonstrates clean architecture with service-layer business logic, transactional integrity, dynamic queries via JPA Specifications, and asynchronous domain events for task assignment notifications.
 
 ## Overview
+
 - Manage employee records and departments
 - Register and search tasks (with dynamic filters)
 - Track lunch logs in bulk
@@ -12,11 +13,13 @@ A Spring Boot service for managing employees, departments, tasks, and lunch logs
 All APIs return a consistent response envelope: `ApiResponse<T>` inside a `ResponseEntity`.
 
 ## Prerequisites
+
 - JDK 17+
 - Maven 3.9+
 - MySQL 8+
 
 ## Database Setup
+
 1. Create a database:
    ```sql
    CREATE DATABASE employee_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -34,7 +37,26 @@ All APIs return a consistent response envelope: `ApiResponse<T>` inside a `Respo
 
 Note: Schema should be applied beforehand if `ddl-auto=none`. Ensure required tables match entities.
 
+### Database Fixtures (recommended)
+
+- **Location**: `src/main/resources/fixtures`
+- **Purpose**: Ready-to-run SQL scripts to initialize the schema for convenience.
+- **Use this for quicker setup** instead of creating tables manually. For example, run `employee_related_tables.sql` to create all required tables:
+
+- Windows PowerShell:
+
+```powershell
+mysql -u YOUR_USERNAME -p employee_db < src\main\resources\fixtures\employee_related_tables.sql
+```
+
+- Bash:
+
+```bash
+mysql -u YOUR_USERNAME -p employee_db < src/main/resources/fixtures/employee_related_tables.sql
+```
+
 ## Build & Run
+
 - Run with Maven (dev):
   ```bash
   mvn spring-boot:run
@@ -55,22 +77,27 @@ Note: Schema should be applied beforehand if `ddl-auto=none`. Ensure required ta
   ```
 
 Verify Java:
+
 ```bash
 java -version
 ```
+
 Ensure it reports Java 17+.
 
 Server will start on `http://localhost:3000`.
 
 ## API Response Envelope
+
 All endpoints return:
+
 ```json
 {
   "success": true,
   "message": null,
-  "data": { }
+  "data": {}
 }
 ```
+
 - `success`: boolean indicating operation result
 - `message`: optional info or error message
 - `data`: payload for successful calls
@@ -78,6 +105,7 @@ All endpoints return:
 ## API Endpoints
 
 ### Employees
+
 - **GET** `/api/employees/{id}`: Get employee details by ID.
   - Example: `GET /api/employees/emp-001`
 - **PUT** `/api/employees/{id}`: Update `fullname`, `position`, and `salary`.
@@ -93,12 +121,13 @@ All endpoints return:
 - **GET** `/api/employees/{id}/profile`: Aggregated profile with basic info, department name, and ongoing tasks.
 
 ### Tasks
+
 - **POST** `/api/tasks`: Create a task.
   - Body:
     ```json
-    { 
-      "employee_id": "emp-001", 
-      "task_name": "Prepare Report", 
+    {
+      "employee_id": "emp-001",
+      "task_name": "Prepare Report",
       "description": "Q3 financials",
       "status": "TO_DO",
       "due_date": "2025-12-31"
@@ -115,6 +144,7 @@ All endpoints return:
     ```
 
 ### Departments
+
 - **GET** `/api/departments`: List all departments.
 - **POST** `/api/departments`: Create a department.
   - Body:
@@ -127,21 +157,22 @@ All endpoints return:
   - Returns: total employees, average salary, tasks by status, new employees last 30 days
 
 ### Lunch Logs
+
 - **POST** `/api/lunch-logs/bulk`: Bulk create lunch logs.
   - Body:
     ```json
     {
       "items": [
-        { 
-          "employeeId": "emp-001", 
-          "lunchDate": "2025-08-21", 
+        {
+          "employeeId": "emp-001",
+          "lunchDate": "2025-08-21",
           "mealType": "Lunch",
           "restaurant": "The Burger Joint",
           "notes": "Team lunch"
         },
-        { 
-          "employeeId": "emp-002", 
-          "lunchDate": "2025-08-21", 
+        {
+          "employeeId": "emp-002",
+          "lunchDate": "2025-08-21",
           "mealType": "Lunch",
           "restaurant": "Salad Bar",
           "notes": "Quick lunch"
@@ -151,6 +182,7 @@ All endpoints return:
     ```
 
 ## Architecture & Key Patterns
+
 - Controllers expose REST endpoints and return `ResponseEntity<ApiResponse<...>>`.
 - Services encapsulate business logic and data orchestration.
 - `@Transactional` ensures atomic department change and history insert.
@@ -158,6 +190,7 @@ All endpoints return:
 - Event-driven task assignment with `ApplicationEventPublisher`, custom `TaskAssignedEvent`, and non-blocking `@Async @EventListener` in `TaskEventListener` (`@EnableAsync` enabled in the application).
 
 ## Technology Stack
+
 - Spring Boot, Spring Web
 - Spring Data JPA (MySQL)
 - Lombok
@@ -165,6 +198,7 @@ All endpoints return:
 - Maven
 
 ## Notes
+
 - Ensure MySQL user has privileges on `employee_db`.
 - Adjust `server.port` and datasource properties as needed.
 - Logs show SQL (`spring.jpa.show-sql=true`) in development.
